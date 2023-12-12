@@ -1,0 +1,23 @@
+devices: 1
+max_steps: 300000
+val_check_interval: 10000
+check_val_every_n_epoch: null
+log_every_n_steps: 10
+num_sanity_val_steps: 5
+logger:
+  class_path: lightning.pytorch.loggers.TensorBoardLogger
+  init_args:
+    save_dir: ./logs
+    name: debug
+    version: debug
+callbacks:
+- class_path: ModelCheckpoint
+  init_args:
+    save_top_k: 10
+    monitor: val/loss
+    mode: min
+    filename: "{step:09d}-{val/loss:.4f}-{val/psnr:.4f}-{val/bpd:.4f}"
+    auto_insert_metric_name: False
+- class_path: GlobalStepRichProgressBar
+- class_path: ClearLogdir
+

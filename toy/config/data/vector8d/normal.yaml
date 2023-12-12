@@ -1,0 +1,13 @@
+class_path: core.data.DistributionDataModule
+init_args:
+  distribution:
+    class_path: core.distribution.transformed.NormalIID
+    init_args: {n_dims: 8}
+  train_batch_size: 1024
+  val_batch_size: 1024
+  test_batch_size: 1024
+  val_n_samples: 102400
+  test_n_samples: 102400
+  val_seed: 2022
+  test_seed: 2022
+  num_workers: 8
