@@ -6,7 +6,7 @@ Our paper is published at CVPR 2023.
 [[arXiv](https://arxiv.org/abs/2305.16025)] 
 [[CVF Open Access](https://openaccess.thecvf.com/content/CVPR2023/html/Feng_NVTC_Nonlinear_Vector_Transform_Coding_CVPR_2023_paper.html)] 
 
-In this the repository, you will find:
+In this repository, you will find:
 
 * Coding playground of various toy source coding models, [[here](./toy)].
 * Train/test code of our NVTC models for lossy image coding, [[here](./image)].
