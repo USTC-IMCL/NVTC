@@ -163,7 +163,7 @@ class MixtureSameFamily(Distribution):
         self._component_distribution = component_distribution
         batch_shape = self._component_distribution.batch_shape
         event_shape = self._component_distribution.event_shape
-        self._event_ndims = len(event_shape)
+        self._event_dims = len(event_shape)
         super().__init__(batch_shape=batch_shape,
                          event_shape=event_shape,
                          validate_args=validate_args)
@@ -217,7 +217,7 @@ class MixtureSameFamily(Distribution):
         return torch.logsumexp(log_survival_function_x + log_mix_prob, dim=-1)  # [S, B]
 
     def _pad(self, x):
-        return x.unsqueeze(-1 - self._event_ndims)
+        return x.unsqueeze(-1 - self._event_dims)
 
 
 class DeepLogisticMixture(DeepDistribution):

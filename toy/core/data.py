@@ -67,10 +67,6 @@ class DistributionDataModule(pl.LightningDataModule):
         self.hist_bins = hist_bins
         self.hist_range = hist_range
 
-        self.train_set = None
-        self.val_set = None
-        self.test_set = None
-
     def setup(self, stage):
         if stage in "fit":
             self.train_set = DistributionDataset(

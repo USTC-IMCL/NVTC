@@ -50,7 +50,7 @@ class VectorQuantizer(nn.Module):
         super().__init__()
 
     def l2_dist(self, x, codebook):
-        x = x.unsqueeze(-1)  # N, ncb, ndim, 1
+        x = x.unsqueeze(-1)  # N, ncb, dim, 1
         dist = x.pow(2).sum(dim=-2) + codebook.pow(2).sum(dim=-1)
         if len(codebook.shape) == 3:
             dist = dist - 2 * torch.einsum('abc,dac->dab', codebook, x.squeeze(-1))
@@ -68,11 +68,11 @@ class VectorQuantizer(nn.Module):
     def forward(self, x, codebook, rate_bias=None):
         """
         Args:
-            x: (N, ncb, ndim)
-            codebook: (N, )[optional] + (ncb or 1, cb_size, ndim)
+            x: (N, ncb, dim)
+            codebook: (N, )[optional] + (ncb or 1, cb_size, dim)
             rate_bias: (N, )[optional] + (ncb or 1, cb_size)
         Return:
-            x_hat: (N, ncb, ndim)
+            x_hat: (N, ncb, dim)
             one_hot: (N, ncb, cb_size)
             dist: (N, ncb, cb_size)
             index: (N, ncb, 1)

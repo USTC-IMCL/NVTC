@@ -1,6 +1,6 @@
 class_path: core.model.anchor.ECVQ
 init_args:
-  x_ndim: 8
+  x_dim: 8
   cb_size: 1000000
-  cb_ndim: 8
+  cb_dim: 8
   rate_constrain: True

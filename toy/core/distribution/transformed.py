@@ -286,7 +286,7 @@ class Mixture(td.Distribution):
                              " equal `component_distributions.batch_shape[-1]`"
                              " ({1})".format(km, kc))
         self._num_components = km
-        self._event_ndims = len(static_event_shape)
+        self._event_dims = len(static_event_shape)
         super().__init__(batch_shape=static_batch_shape,
                          event_shape=static_event_shape,
                          validate_args=validate_args)
@@ -455,8 +455,8 @@ class MixNormal(ShiftScaleRotationMixture):
 
 
 def plot_distribution(source, intervals, path, figsize=None):
-    ndim_source, = source.event_shape
-    if len(intervals) != ndim_source or ndim_source not in (1, 2):
+    dim_source, = source.event_shape
+    if len(intervals) != dim_source or dim_source not in (1, 2):
         raise ValueError("This method is only defined for 1D or 2D models.")
 
     data = [torch.linspace(float(i[0]), float(i[1]), int(i[2])) for i in
@@ -469,7 +469,7 @@ def plot_distribution(source, intervals, path, figsize=None):
     else:
         data_dist = source.log_prob(data).exp().numpy()
 
-    if ndim_source == 1:
+    if dim_source == 1:
         data = np.squeeze(data.numpy(), axis=-1)
         plt.figure(figsize=figsize or (16, 8))
         plt.plot(data, data_dist, label="source")

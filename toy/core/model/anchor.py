@@ -39,7 +39,7 @@ class ResBlocks(nn.Module):
 class NTC(SourceCodingModelBase):
     def __init__(
             self,
-            x_ndim: int,
+            x_dim: int,
             N: int,
             M: int,
             lmbda: float,
@@ -50,7 +50,7 @@ class NTC(SourceCodingModelBase):
         self._lmbda = lmbda
 
         self.g_a = nn.Sequential(
-            nn.Linear(x_ndim, N),
+            nn.Linear(x_dim, N),
             ResBlocks(N),
             nn.Linear(N, N),
             ResBlocks(N),
@@ -65,7 +65,7 @@ class NTC(SourceCodingModelBase):
             ResBlocks(N),
             nn.Linear(N, N),
             ResBlocks(N),
-            nn.Linear(N, x_ndim),
+            nn.Linear(N, x_dim),
         )
 
         self.quant = UniformScalarQuantizer()
@@ -202,9 +202,9 @@ class NTC(SourceCodingModelBase):
 class ECVQ(SourceCodingModelBase):
     def __init__(
             self,
-            x_ndim: int,
+            x_dim: int,
             cb_size: int,
-            cb_ndim: int,
+            cb_dim: int,
             lmbda: float,
             rate_constrain: bool = True,
             lr: float = 2e-4,
@@ -214,13 +214,13 @@ class ECVQ(SourceCodingModelBase):
         self._lmbda = lmbda
         self._rate_constrain = rate_constrain
         self._cb_size = cb_size
-        self._cb_ndim = cb_ndim
+        self._cb_dim = cb_dim
 
-        ncb = x_ndim // cb_ndim
-        assert x_ndim == ncb * cb_ndim
+        ncb = x_dim // cb_dim
+        assert x_dim == ncb * cb_dim
         self._ncb = ncb
         self.codebook = nn.Parameter(
-            torch.Tensor(ncb, cb_size, cb_ndim).normal_(0, 1. / math.sqrt(cb_ndim)))
+            torch.Tensor(ncb, cb_size, cb_dim).normal_(0, 1. / math.sqrt(cb_dim)))
         self.logits = nn.Parameter(torch.zeros(ncb, cb_size))
         self.quant = VectorQuantizer()
 
@@ -231,7 +231,7 @@ class ECVQ(SourceCodingModelBase):
         # train_set = self.trainer.train_dataloader.dataset
         # x = train_set[torch.randperm(len(train_set))[:self._cb_size]]
         x = self.trainer.datamodule.sample(self._cb_size)
-        x = x.view(self._cb_size, self._ncb, self._cb_ndim)
+        x = x.view(self._cb_size, self._ncb, self._cb_dim)
         x = x.permute(1, 0, 2)
         assert x.shape == self.codebook.shape
         self.codebook.data = x.to(self.device)
@@ -253,7 +253,7 @@ class ECVQ(SourceCodingModelBase):
         codebook = self.codebook.detach()
         logits = self.logits.detach()
 
-        ncb, cb_size, cb_ndim = codebook.shape
+        ncb, cb_size, cb_dim = codebook.shape
         num_live, mask_live = self.codebook_info(prob_threshold)
         num_dead = cb_size - num_live
 
@@ -263,7 +263,7 @@ class ECVQ(SourceCodingModelBase):
             mask = mask_live[icb]
             pmf = log_pmf[icb][mask].exp()
             idx = pmf.multinomial(num_dead[icb], replacement=True)
-            disturb = torch.normal(0, 1e-4, size=(num_dead[icb], cb_ndim))
+            disturb = torch.normal(0, 1e-4, size=(num_dead[icb], cb_dim))
             disturb = disturb.to(codebook.device)
             codebook[icb][~mask] = codebook[icb][mask][idx] + disturb
             logits[icb][~mask] = logits[icb][mask][idx]
@@ -284,9 +284,9 @@ class ECVQ(SourceCodingModelBase):
         else:
             rate_bias = None
 
-        x_hat = x.reshape(x.shape[0], self._ncb, self._cb_ndim)
+        x_hat = x.reshape(x.shape[0], self._ncb, self._cb_dim)
         x_hat, one_hot, x_index = self.quant(x_hat, codebook, rate_bias)
-        x_hat = x_hat.reshape(x.shape[0], self._ncb * self._cb_ndim)
+        x_hat = x_hat.reshape(x.shape[0], self._ncb * self._cb_dim)
         x_index = x_index.reshape(x.shape[0], self._ncb * 1)
         log2_prob = (one_hot * log2_pmf).sum(-1)
         bits = log2_prob.sum()
@@ -366,14 +366,14 @@ class ECVQ(SourceCodingModelBase):
 class NTECVQ(ECVQ):
     def __init__(
             self,
-            x_ndim: int,
+            x_dim: int,
             N: int,
             M: int,
             **kwargs
     ):
-        super().__init__(x_ndim=M, **kwargs)
+        super().__init__(x_dim=M, **kwargs)
         self.g_a = nn.Sequential(
-            nn.Linear(x_ndim, N),
+            nn.Linear(x_dim, N),
             ResBlocks(N),
             nn.Linear(N, N),
             ResBlocks(N),
@@ -388,7 +388,7 @@ class NTECVQ(ECVQ):
             ResBlocks(N),
             nn.Linear(N, N),
             ResBlocks(N),
-            nn.Linear(N, x_ndim),
+            nn.Linear(N, x_dim),
         )
 
     def forgy_initialize(self):
@@ -405,11 +405,11 @@ class NTECVQ(ECVQ):
         else:
             rate_bias = None
 
-        y = y.reshape(B, self._ncb, self._cb_ndim)
+        y = y.reshape(B, self._ncb, self._cb_dim)
         y_hat, one_hot, y_index = self.quant(y, self.codebook, rate_bias)
         vq_distance = ((y - y_hat) ** 2).mean()
-        y = y.reshape(B, self._ncb * self._cb_ndim)
-        y_hat = y_hat.reshape(B, self._ncb * self._cb_ndim)
+        y = y.reshape(B, self._ncb * self._cb_dim)
+        y_hat = y_hat.reshape(B, self._ncb * self._cb_dim)
         y_index = y_index.reshape(B, self._ncb * 1)
 
         x_hat = self.g_s((y_hat - y).detach() + y)
@@ -512,7 +512,7 @@ class NTECVQ(ECVQ):
             rate_bias = None
 
         B = y.shape[0]
-        y = y.reshape(B, 1, self._cb_ndim)
+        y = y.reshape(B, 1, self._cb_dim)
 
         y_index_list = []
         for yi in y.split(1024, dim=0):
@@ -537,7 +537,7 @@ class NTECVQ(ECVQ):
         y = [self(xi.to(self.device))['y'] for xi in x.split(1024, dim=0)]
         y = torch.cat(y, 0).cpu()
 
-        y = y.split(self._cb_ndim, dim=-1)
+        y = y.split(self._cb_dim, dim=-1)
         for idx, y_idx in enumerate(y):
             fig = plt.figure()
             ax = fig.add_subplot(111)

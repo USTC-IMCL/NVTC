@@ -1,5 +1,5 @@
 class_path: core.model.anchor.NTC
 init_args:
-  x_ndim: 8
+  x_dim: 8
   N: 384
   M: 8

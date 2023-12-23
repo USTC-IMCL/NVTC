@@ -1,8 +1,8 @@
 class_path: core.model.anchor.NTECVQ
 init_args:
-  x_ndim: 2
+  x_dim: 2
   N: 192
   M: 2
   cb_size: 1024
-  cb_ndim: 2
+  cb_dim: 2
   rate_constrain: True
