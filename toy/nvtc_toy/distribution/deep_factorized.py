@@ -3,8 +3,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from core.distribution import helpers
-from core.distribution.base import DeepDistribution
+from nvtc_toy.distribution import helpers
+from nvtc_toy.distribution.base import DeepDistribution
 from torch.distributions.distribution import Distribution
 
 

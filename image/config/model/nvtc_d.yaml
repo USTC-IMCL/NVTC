@@ -1,0 +1,14 @@
+class_path: nvtc_image.model.nvtc.NVTC
+init_args:
+  lmbda: 256
+  n_stage: 3  # The number of different resolution stages
+  n_layer: [ 4, 6, 6 ]  # The number of quantization layers for each stage
+  vt_dim: [ 192, 192, 192 ]  # The channel dimension of vt units
+  vt_nunit: [ 2, 2, 2 ]   # The number of vt units in a quantization layer
+  block_size: [ 4, 4, 4 ]  # The spatial block size in DepthwiseBlockFC
+  cb_dim: [ 4, 8, 16 ]  # The codebook dimension
+  cb_size: [ 128, 256, 512 ]  # The codebook size
+  param_dim: [ 4, 4, 4 ]
+  param_nlevel: [ 128, 64, 32 ]
+  discretized: True
+  rate_constrain: True

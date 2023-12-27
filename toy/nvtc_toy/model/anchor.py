@@ -10,12 +10,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from core import data
-from core.distribution.common import Softmax
-from core.distribution.uniform_noised import NoisyDeepFactorized
-from core.entropy_model.entropy_model import UnboundedIndexEntropyModel
-from core.model.quantizer import UniformScalarQuantizer, VectorQuantizer
-from core.model.base import SourceCodingModelBase
+from nvtc_toy import data
+from nvtc_toy.distribution.common import Softmax
+from nvtc_toy.distribution.uniform_noised import NoisyDeepFactorized
+from nvtc_toy.entropy_model.entropy_model import UnboundedIndexEntropyModel
+from nvtc_toy.model.quantizer import UniformScalarQuantizer, VectorQuantizer
+from nvtc_toy.model.base import SourceCodingModelBase
 
 
 class ResBlock(nn.Module):

@@ -16,6 +16,7 @@ We recommend using [miniconda](https://docs.conda.io/en/latest/miniconda.html) f
 
 ```bash
 python -m pip install -r requirements.txt
+pip install -e .
 ```
 
 ## Usage

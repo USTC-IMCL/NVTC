@@ -1,0 +1,7 @@
+class_path: nvtc_image.data.ImageCodingDataModule
+init_args:
+  train_dir: /dat1/datasets/coco/coco_train2017_lmdb
+  test_glob: /data1/datasets/kodak/*.png
+  crop_size: 256
+  batch_size: 8
+  num_workers: 8

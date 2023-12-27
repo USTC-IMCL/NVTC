@@ -1,13 +1,13 @@
 from numbers import Number
 
-import core.distribution.special_math as special_math
-import core.ops as ops
+import nvtc_toy.distribution.special_math as special_math
+import nvtc_toy.ops as ops
 import math
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from core.distribution.base import DeepDistribution
+from nvtc_toy.distribution.base import DeepDistribution
 from torch.distributions.distribution import Distribution
 from torch.distributions.laplace import Laplace as _Laplace
 from torch.distributions.normal import Normal as _Normal

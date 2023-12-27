@@ -1,10 +1,10 @@
-import core.ops as ops
+import nvtc_image.ops as ops
 import math
 import torch
 import torch.nn as nn
-from core.distribution.common import Normal, DeepNormal, DeepNormalMixture, \
+from nvtc_image.distribution.common import Normal, DeepNormal, DeepNormalMixture, \
     DeepLogistic, DeepLogisticMixture
-from core.distribution.deep_factorized import DeepFactorized
+from nvtc_image.distribution.deep_factorized import DeepFactorized
 from torch.autograd import grad
 
 

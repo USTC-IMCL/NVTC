@@ -9,7 +9,7 @@ Our paper is published at CVPR 2023.
 In this repository, you will find:
 
 * Coding playground of various toy source coding models, [[here](./toy)].
-* Train/test code of our NVTC models for lossy image coding, [[here](./image)].
+* Training/testing code of our NVTC models for lossy image coding, [[here](./image)].
 
 # Citation
 If you find this repo useful, please cite:
