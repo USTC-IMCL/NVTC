@@ -150,7 +150,7 @@ class NVTC(pl.LightningModule):
             vt_nunit: list[int] =(2, 2, 2),  # The number of vt units in a quantization layer
             block_size: list[int] = (4, 4, 4),  # The spatial block size in DepthwiseBlockFC
             cb_dim: list[int] = (4, 8, 16),  # The codebook dimension
-            cb_size: list[int] = (256, 512, 1024),  # The codebook size
+            cb_size: list[int] = (128, 256, 512),  # The codebook size
             param_dim: list[int] = (4, 4, 4),
             param_nlevel: list[int] = (128, 64, 32),
             rate_constrain: bool = True,
@@ -334,19 +334,6 @@ class NVTC(pl.LightningModule):
             self.use_vq = [[0, 0, 0, 0], [1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1]]
         else:
             self.use_vq = [[1, 1, 1, 1], [1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1]]
-
-        if t >= 1800000 and t <= 2010000:
-            for m in self.parameters():
-                m.requires_grad = False
-            for s in range(self.n_stage):
-                for l in range(self.n_layer[s]):
-                    m = self.quantizer[s][l].entropy_model.param_table
-                    m.requires_grad = True
-                    m = self.quantizer[s][l].entropy_model.logits
-                    m.requires_grad = True
-        else:
-            for m in self.parameters():
-                m.requires_grad = True
 
     def on_validation_end(self):
         print(f'global_step: {self.global_step:09d}')
