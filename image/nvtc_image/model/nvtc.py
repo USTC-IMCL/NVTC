@@ -188,7 +188,7 @@ class NVTC(pl.LightningModule):
             if s == 0:
                 resolution_factor = downscale_factor[s]
             else:
-                assert downscale_factor[s + 1] % downscale_factor[s] == 0
+                assert downscale_factor[s] % downscale_factor[s - 1] == 0
                 resolution_factor = int(downscale_factor[s] / downscale_factor[s - 1])
             vt_dim_upper = 3 if s == 0 else vt_dim[s - 1]
             scaling_inner_dim = vt_dim_upper * resolution_factor ** 2
