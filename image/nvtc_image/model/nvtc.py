@@ -1,11 +1,12 @@
 import time
-
-import lightning.pytorch as pl
 import math
+import imageio.v3 as iio
 import numpy as np
+from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import lightning.pytorch as pl
 
 from nvtc_image.distribution.common import Softmax
 from nvtc_image.entropy_model.discrete import DiscreteUnconditionalEntropyModel, DiscreteConditionalEntropyModel
@@ -318,6 +319,13 @@ class NVTC(pl.LightningModule):
         t1 = time.time()
         self.log("test/forward_time (s)", t1 - t0)
         self._shared_log_step(batch, result, tab_name="test")
+
+        # save reconstruction
+        rec = result["x_hat"].mul(255).round().clamp(0, 255)
+        rec = rec.squeeze(0).permute(1, 2, 0).to(torch.uint8).cpu().numpy()
+        rec_dir = Path(self.trainer.log_dir) / 'recon'
+        rec_dir.mkdir(exist_ok=True, parents=True)
+        iio.imwrite(rec_dir / f"{name[0]}.png", rec)
         return result["loss"]
 
     def on_train_batch_start(self, batch, batch_idx):
