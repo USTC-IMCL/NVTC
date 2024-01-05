@@ -1,6 +1,6 @@
-class_path: core.data.DistributionDataModule
+class_path: nvtc_toy.data.DistributionDataModule
 init_args:
-  distribution: core.distribution.transformed.Boomerang
+  distribution: nvtc_toy.distribution.transformed.Boomerang
   train_batch_size: 1024
   val_batch_size: 10240
   test_batch_size: 10240

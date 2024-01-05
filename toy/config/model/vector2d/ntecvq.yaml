@@ -1,4 +1,4 @@
-class_path: core.model.anchor.NTECVQ
+class_path: nvtc_toy.model.anchor.NTECVQ
 init_args:
   x_dim: 2
   N: 192
