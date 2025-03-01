@@ -18,6 +18,4 @@ callbacks:
     mode: min
     filename: "{step:09d}-{val/loss:.4f}-{val/psnr:.4f}-{val/bpd:.4f}"
     auto_insert_metric_name: False
-- class_path: GlobalStepRichProgressBar
-- class_path: ClearLogdir
 
